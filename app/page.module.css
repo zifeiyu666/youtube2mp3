@@ -1,0 +1,98 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.page::before,
+.page::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.page::before {
+  top: -5rem;
+  right: -6rem;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(255, 255, 255, 0.45);
+  filter: blur(12px);
+}
+
+.page::after {
+  bottom: -8rem;
+  left: -3rem;
+  width: 22rem;
+  height: 22rem;
+  background: rgba(214, 40, 40, 0.08);
+}
+
+.frame {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1rem 0 3rem;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0 0;
+}
+
+.brand {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.miniNote {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.adTop,
+.adBottom {
+  min-height: 108px;
+  border: 1px dashed rgba(46, 32, 19, 0.2);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.54);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.adTop {
+  margin-top: 1.25rem;
+}
+
+.adBottom {
+  margin-top: 1rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .topBar,
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

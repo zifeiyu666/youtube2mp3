@@ -1,0 +1,160 @@
+.shell {
+  position: relative;
+  display: grid;
+  gap: 2rem;
+  width: min(1080px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.copy {
+  display: grid;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--brand-strong);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.copy h1 {
+  margin: 0;
+  max-width: 10ch;
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  line-height: 0.96;
+}
+
+.lead {
+  max-width: 56ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-xl);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(32, 21, 13, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  border-color: rgba(214, 40, 40, 0.52);
+  box-shadow: 0 0 0 4px rgba(214, 40, 40, 0.12);
+}
+
+.button {
+  border: 0;
+  border-radius: 999px;
+  padding: 1rem 1.3rem;
+  color: #fff9f0;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-strong) 100%);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(143, 17, 17, 0.2);
+}
+
+.button:disabled {
+  cursor: wait;
+  opacity: 0.8;
+}
+
+.progressCard {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.2rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 247, 238, 0.92);
+  border: 1px solid rgba(32, 21, 13, 0.08);
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.progressTrack {
+  overflow: hidden;
+  border-radius: 999px;
+  height: 14px;
+  background: rgba(46, 32, 19, 0.1);
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff7b54 0%, #d62828 100%);
+  transition: width 0.4s ease;
+}
+
+.status,
+.title {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.status {
+  color: var(--muted);
+}
+
+.title {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.downloadLink {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #fff;
+  background: var(--ok);
+  font-weight: 700;
+}
+
+@media (min-width: 900px) {
+  .shell {
+    grid-template-columns: minmax(0, 1.1fr) minmax(360px, 480px);
+    align-items: center;
+    padding: 4rem 0;
+  }
+
+  .form {
+    padding: 2rem;
+  }
+}
