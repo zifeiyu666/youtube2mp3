@@ -59,12 +59,58 @@
   font-size: 0.9rem;
 }
 
+.contentGrid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.infoCard {
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 8px 24px rgba(79, 43, 21, 0.08);
+}
+
+.infoCard h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+}
+
+.infoCard p {
+  margin: 0;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.faqList {
+  display: grid;
+  gap: 1rem;
+}
+
+.faqList h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.faqList p {
+  margin: 0;
+}
+
 .adBottomWrap {
   margin-top: 1.5rem;
 }
 
 .adBottom {
-  min-height: 108px;
+  min-height: 72px;
   border: 1px dashed rgba(46, 32, 19, 0.2);
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.54);
@@ -72,44 +118,32 @@
   display: grid;
   place-items: center;
   text-align: center;
-  padding: 1rem;
-}
-
-.adBottom {
-}
-
-.adSquareShell {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  width: 220px;
-  max-width: calc(100vw - 2rem);
-  z-index: 30;
-}
-
-.adSquareFixed {
-  width: 220px;
-  min-height: 220px;
-  max-width: calc(100vw - 2rem);
-  border: 1px dashed rgba(46, 32, 19, 0.2);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--muted);
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding: 1rem;
-  box-shadow: 0 16px 40px rgba(79, 43, 21, 0.16);
-  backdrop-filter: blur(14px);
+  padding: 0.5rem 0.75rem;
 }
 
 .footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
   margin-top: 1.5rem;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.footerNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footerNav a {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.footerNav a:hover {
+  border-bottom-color: currentColor;
 }
 
 @media (max-width: 720px) {
@@ -117,9 +151,5 @@
   .footer {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .adSquareShell {
-    display: none;
   }
 }

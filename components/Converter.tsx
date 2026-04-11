@@ -120,15 +120,16 @@ export function Converter() {
     <section className={styles.shell}>
       <div className={styles.copy}>
         <p className={styles.eyebrow}>Fast MP3 export</p>
-        <h1>YouTube to MP3 in one clean flow.</h1>
+        <h1>YouTube to MP3 converter for quick MP3 downloads.</h1>
         <p className={styles.lead}>
-          Paste a public YouTube URL, let the conversion finish, then download the audio file.
+          youtube2mp3.io is a simple YouTube to MP3 converter. Paste a public YouTube URL, let the
+          conversion finish, then download the MP3 audio file.
         </p>
       </div>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <label className={styles.label} htmlFor="youtube-url">
-          Video URL
+          YouTube video URL
         </label>
         <input
           id="youtube-url"
@@ -141,7 +142,7 @@ export function Converter() {
         />
 
         <button className={styles.button} type="submit" disabled={isLoading}>
-          {isLoading ? "Converting..." : "Convert to MP3"}
+          {isLoading ? "Converting..." : "Use YouTube to MP3 Converter"}
         </button>
 
         <div className={styles.progressCard} aria-live="polite">

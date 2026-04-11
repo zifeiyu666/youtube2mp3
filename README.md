@@ -1,6 +1,6 @@
 # YouTube to MP3
 
-A small Next.js app that converts public YouTube videos to MP3 by proxying the upstream service hosted at `yt2mp3-magic.onrender.com`.
+A small Next.js app for `youtube2mp3.io` that converts public YouTube videos to MP3 by proxying the upstream service hosted at `yt2mp3-magic.onrender.com`.
 
 ## Setup
 
@@ -29,3 +29,4 @@ A small Next.js app that converts public YouTube videos to MP3 by proxying the u
 - The frontend calls local route handlers under `/api/convert/*`.
 - The local route handlers proxy requests to the upstream conversion service to avoid browser-side CORS issues.
 - The AdSense blocks in [app/page.tsx](/Users/gymd/myProjects/youtube2mp3/app/page.tsx) now mirror the official `ins.adsbygoogle` plus `push({})` pattern for each slot.
+- Legal pages are available at `/copyright`, `/privacy-policy`, and `/terms-of-service`.

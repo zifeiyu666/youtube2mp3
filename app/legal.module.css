@@ -1,0 +1,59 @@
+.page {
+  min-height: 100vh;
+  padding: 2rem 1rem 4rem;
+}
+
+.shell {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-xl);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.back {
+  display: inline-flex;
+  margin-bottom: 1.25rem;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.back:hover {
+  border-bottom-color: currentColor;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+}
+
+.lede {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.section {
+  margin-top: 2rem;
+}
+
+.section h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+}
+
+.section p {
+  margin: 0;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.section ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  line-height: 1.8;
+}

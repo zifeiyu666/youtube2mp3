@@ -2,19 +2,22 @@ import Script from "next/script";
 import type { Metadata } from "next";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://youtube2mp3.io";
 const adsenseClient =
   process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT || "ca-pub-8919343509754259";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "YouTube to MP3",
-  description: "Convert YouTube videos to MP3 with a simple three-step flow.",
+  title: {
+    default: "youtube2mp3.io",
+    template: "%s | youtube2mp3.io",
+  },
+  description: "youtube2mp3.io converts public YouTube videos to MP3 with a simple web flow.",
   openGraph: {
-    title: "YouTube to MP3",
+    title: "youtube2mp3.io",
     description: "Paste a YouTube link and download the MP3 when conversion finishes.",
     url: siteUrl,
-    siteName: "YouTube to MP3",
+    siteName: "youtube2mp3.io",
     type: "website",
   },
 };
