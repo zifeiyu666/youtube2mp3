@@ -134,6 +134,12 @@
   font-size: 0.95rem;
 }
 
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .downloadLink {
   display: inline-flex;
   justify-content: center;
@@ -147,6 +153,71 @@
   font-weight: 700;
 }
 
+.editMusicLink {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(135deg, #ff7b54 0%, #d62828 100%);
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editMusicLink:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(214, 40, 40, 0.25);
+}
+
+.bgmGenSection {
+  grid-column: 1 / -1;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 247, 238, 0.6);
+  border: 1px solid rgba(32, 21, 13, 0.08);
+}
+
+.bgmGenTitle {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+}
+
+.bgmGenButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.bgmGenButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--brand-strong);
+  background: #fff;
+  border: 1px solid rgba(214, 40, 40, 0.2);
+  transition: all 0.2s ease;
+}
+
+.bgmGenButton:hover {
+  background: var(--brand-strong);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(143, 17, 17, 0.15);
+}
+
 @media (min-width: 900px) {
   .shell {
     grid-template-columns: minmax(0, 1.1fr) minmax(360px, 480px);
@@ -156,5 +227,19 @@
 
   .form {
     padding: 2rem;
+  }
+
+  .bgmGenSection {
+    margin-top: 3rem;
+    padding: 2rem;
+  }
+
+  .bgmGenTitle {
+    font-size: 1.1rem;
+  }
+
+  .bgmGenButton {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.95rem;
   }
 }

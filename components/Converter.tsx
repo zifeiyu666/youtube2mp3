@@ -156,12 +156,76 @@ export function Converter() {
           <p className={styles.status}>{status}</p>
           {title ? <p className={styles.title}>Current title: {title}</p> : null}
           {downloadPath ? (
-            <a className={styles.downloadLink} href={downloadPath}>
-              Download MP3
-            </a>
+            <div className={styles.actionButtons}>
+              <a className={styles.downloadLink} href={downloadPath}>
+                Download MP3
+              </a>
+              <a
+                className={styles.editMusicLink}
+                href="https://bgmgen.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Edit Music with AI
+              </a>
+            </div>
           ) : null}
         </div>
       </form>
+
+      <div className={styles.bgmGenSection}>
+        <p className={styles.bgmGenTitle}>Free AI Music Tools — Royalty-Free for Commercial Use</p>
+        <div className={styles.bgmGenButtons}>
+          <a
+            href="https://bgmgen.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bgmGenButton}
+          >
+            AI BgmGen
+          </a>
+          <a
+            href="https://bgmgen.com/workspace/create"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bgmGenButton}
+          >
+            AI Music Generator
+          </a>
+          <a
+            href="https://bgmgen.com/workspace/create-bgm"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bgmGenButton}
+          >
+            Royalty-Free Background Music
+          </a>
+          <a
+            href="https://bgmgen.com/workspace/create-bgm"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bgmGenButton}
+          >
+            Add Commercial-Use Audio
+          </a>
+          <a
+            href="https://bgmgen.com/workspace/vocal-remover"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bgmGenButton}
+          >
+            Free Vocal Remover
+          </a>
+          <a
+            href="https://bgmgen.com/workspace/create-mix"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bgmGenButton}
+          >
+            Mix Music for Commercial Projects
+          </a>
+        </div>
+      </div>
     </section>
   );
 }

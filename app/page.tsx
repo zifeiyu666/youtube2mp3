@@ -206,6 +206,9 @@ export default function Home() {
             <Link href="/privacy-policy">Privacy Policy</Link>
             <Link href="/terms-of-service">Terms of Service</Link>
           </nav>
+          <nav className={styles.footerNav} aria-label="Friendly Links">
+            <a href="https://bgmgen.com" target="_blank" rel="noopener noreferrer">BgmGen</a>
+          </nav>
         </footer>
       </div>
     </main>
