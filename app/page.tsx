@@ -105,7 +105,11 @@ export default function Home() {
       <div className={styles.frame}>
         <header className={styles.topBar}>
           <p className={styles.brand}>youtube2mp3.io</p>
-          <p className={styles.miniNote}>Convert YouTube to MP3 & MP4 — fast downloads for audio and video.</p>
+          <nav className={styles.nav}>
+            <Link href="/" className={styles.navLink}>Home</Link>
+            <a href="https://bgmgen.com" target="_blank" rel="noopener noreferrer" className={`${styles.navLink} ${styles.navLinkPrimary}`}>AI Music Generator</a>
+            <Link href="/blog" className={styles.navLink}>Blog</Link>
+          </nav>
         </header>
 
         <Script

@@ -42,7 +42,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 0 0;
+  padding: 1rem 0;
 }
 
 .brand {
@@ -51,12 +51,42 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--brand);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navLink {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.navLinkPrimary {
+  color: #fff;
+  background: var(--brand);
+}
+
+.navLinkPrimary:hover {
+  background: var(--brand-strong);
+  color: #fff;
 }
 
 .miniNote {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
+  display: none;
 }
 
 .contentGrid {

@@ -10,6 +10,8 @@
 .copy {
   display: grid;
   gap: 1rem;
+  text-align: center;
+  justify-items: center;
 }
 
 .eyebrow {
