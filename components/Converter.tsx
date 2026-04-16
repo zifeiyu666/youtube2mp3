@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import styles from "./converter.module.css";
 
 type StartResponse = {
@@ -27,21 +27,28 @@ export function Converter() {
   const [status, setStatus] = useState("Paste a YouTube link to begin.");
   const [downloadPath, setDownloadPath] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [videoId, setVideoId] = useState("");
   const intervalRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        window.clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
 
   const clearPolling = () => {
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+  };
+
+  const extractVideoId = (input: string): string | null => {
+    if (input.includes("youtube.com/")) {
+      const match = /v=([a-zA-Z0-9\-_]{11})/.exec(input);
+      if (match) return match[1];
+      const shortMatch = /youtube\.com\/shorts\/([a-zA-Z0-9\-_]{11})/.exec(input);
+      if (shortMatch) return shortMatch[1];
+    }
+    if (input.includes("youtu.be/")) {
+      const match = /youtu\.be\/([a-zA-Z0-9\-_]{11})/.exec(input);
+      if (match) return match[1];
+    }
+    return null;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -52,7 +59,17 @@ export function Converter() {
     setProgress(0);
     setTitle("");
     setDownloadPath("");
+    setVideoId("");
     setStatus("Contacting the conversion service...");
+
+    const id = extractVideoId(url);
+    if (!id) {
+      setIsLoading(false);
+      setStatus("Invalid YouTube URL. Please check and try again.");
+      return;
+    }
+
+    setVideoId(id);
 
     try {
       const startResponse = await fetch("/api/convert/start", {
@@ -66,7 +83,9 @@ export function Converter() {
       const startData = (await startResponse.json()) as StartResponse;
 
       if (!startResponse.ok || !startData.success || !startData.pid || !startData.title) {
-        throw new Error(startData.error || "Unable to start conversion.");
+        setIsLoading(false);
+        setStatus("Conversion service unavailable. Use the alternative below.");
+        return;
       }
 
       setTitle(startData.title);
@@ -80,7 +99,10 @@ export function Converter() {
         const statusData = (await response.json()) as StatusResponse;
 
         if (!response.ok) {
-          throw new Error(statusData.error || "Unable to fetch conversion status.");
+          clearPolling();
+          setIsLoading(false);
+          setStatus("Conversion service unavailable. Use the alternative below.");
+          return;
         }
 
         const safeProgress = Math.min(Math.max(statusData.progress ?? 0, 0), 1000);
@@ -97,33 +119,34 @@ export function Converter() {
             )}&title=${encodeURIComponent(startData.title as string)}`,
           );
           setIsLoading(false);
+          return;
         }
       };
 
       await runStatusCheck();
 
       intervalRef.current = window.setInterval(() => {
-        void runStatusCheck().catch((error: unknown) => {
+        void runStatusCheck().catch(() => {
           clearPolling();
           setIsLoading(false);
-          setStatus(error instanceof Error ? error.message : "Conversion failed.");
+          setStatus("Conversion service unavailable. Use the alternative below.");
         });
       }, POLL_MS);
-    } catch (error) {
+    } catch {
       clearPolling();
       setIsLoading(false);
-      setStatus(error instanceof Error ? error.message : "Conversion failed.");
+      setStatus("Conversion service unavailable. Use the alternative below.");
     }
   };
 
   return (
     <section className={styles.shell}>
       <div className={styles.copy}>
-        <p className={styles.eyebrow}>Fast MP3 export</p>
-        <h1>YouTube to MP3 converter for quick MP3 downloads.</h1>
+        <p className={styles.eyebrow}>Fast MP3 & MP4 export</p>
+        <h1>YouTube to MP3 & MP4 converter for quick downloads.</h1>
         <p className={styles.lead}>
-          youtube2mp3.io is a simple YouTube to MP3 converter. Paste a public YouTube URL, let the
-          conversion finish, then download the MP3 audio file.
+          youtube2mp3.io converts public YouTube videos to MP3 audio or MP4 video. Paste a URL,
+          convert, and download — supports both formats side by side.
         </p>
       </div>
 
@@ -145,33 +168,50 @@ export function Converter() {
           {isLoading ? "Converting..." : "Use YouTube to MP3 Converter"}
         </button>
 
-        <div className={styles.progressCard} aria-live="polite">
-          <div className={styles.progressHeader}>
-            <span>Status</span>
-            <span>{progress}%</span>
-          </div>
-          <div className={styles.progressTrack}>
-            <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-          </div>
-          <p className={styles.status}>{status}</p>
-          {title ? <p className={styles.title}>Current title: {title}</p> : null}
-          {downloadPath ? (
-            <div className={styles.actionButtons}>
-              <a className={styles.downloadLink} href={downloadPath}>
-                Download MP3
-              </a>
-              <a
-                className={styles.editMusicLink}
-                href="https://bgmgen.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Edit Music with AI
-              </a>
+        {isLoading ? (
+          <div className={styles.progressCard} aria-live="polite">
+            <div className={styles.progressHeader}>
+              <span>Status</span>
+              <span>{progress}%</span>
             </div>
-          ) : null}
-        </div>
+            <div className={styles.progressTrack}>
+              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+            </div>
+            <p className={styles.status}>{status}</p>
+            {title ? <p className={styles.title}>Current title: {title}</p> : null}
+            {downloadPath ? (
+              <div className={styles.actionButtons}>
+                <a className={styles.downloadLink} href={downloadPath}>
+                  Download MP3
+                </a>
+                <a
+                  className={styles.editMusicLink}
+                  href="https://bgmgen.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Edit Music with AI
+                </a>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </form>
+
+      {videoId ? (
+        <div className={styles.fallbackCard}>
+          <p className={styles.fallbackCardTitle}>Alternative download — MP3 &amp; MP4</p>
+          <div className={styles.fallbackIframeWrap}>
+            <iframe
+              src={`https://y2jar.cc/?id=${videoId}&appearance=dark`}
+              className={styles.fallbackIframe}
+              title="YouTube to MP3/MP4 Converter"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      ) : null}
 
       <div className={styles.bgmGenSection}>
         <p className={styles.bgmGenTitle}>Free AI Music Tools — Royalty-Free for Commercial Use</p>
