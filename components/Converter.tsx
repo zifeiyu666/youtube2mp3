@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import styles from "./converter.module.css";
 
 type StartResponse = {
@@ -19,6 +19,8 @@ type StatusResponse = {
 };
 
 const POLL_MS = 6000;
+const HISTORY_KEY = "yt2mp3_history";
+const MAX_HISTORY = 20;
 
 export function Converter() {
   const [url, setUrl] = useState("");
@@ -28,7 +30,34 @@ export function Converter() {
   const [downloadPath, setDownloadPath] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [videoId, setVideoId] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
   const intervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(HISTORY_KEY);
+      if (stored) {
+        setHistory(JSON.parse(stored));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const saveToHistory = (newUrl: string) => {
+    try {
+      const updated = [newUrl, ...history.filter((h) => h !== newUrl)].slice(0, MAX_HISTORY);
+      setHistory(updated);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem(HISTORY_KEY);
+  };
 
   const clearPolling = () => {
     if (intervalRef.current) {
@@ -61,6 +90,8 @@ export function Converter() {
     setDownloadPath("");
     setVideoId("");
     setStatus("Contacting the conversion service...");
+
+    saveToHistory(url);
 
     const id = extractVideoId(url);
     if (!id) {
@@ -150,68 +181,85 @@ export function Converter() {
         </p>
       </div>
 
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <label className={styles.label} htmlFor="youtube-url">
-          YouTube video URL
-        </label>
-        <input
-          id="youtube-url"
-          className={styles.input}
-          type="url"
-          placeholder="https://www.youtube.com/watch?v=..."
-          value={url}
-          onChange={(event) => setUrl(event.target.value)}
-          required
-        />
-
-        <button className={styles.button} type="submit" disabled={isLoading}>
-          {isLoading ? "Converting..." : "Use YouTube to MP3 Converter"}
-        </button>
-
-        {isLoading ? (
-          <div className={styles.progressCard} aria-live="polite">
-            <div className={styles.progressHeader}>
-              <span>Status</span>
-              <span>{progress}%</span>
-            </div>
-            <div className={styles.progressTrack}>
-              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-            </div>
-            <p className={styles.status}>{status}</p>
-            {title ? <p className={styles.title}>Current title: {title}</p> : null}
-            {downloadPath ? (
-              <div className={styles.actionButtons}>
-                <a className={styles.downloadLink} href={downloadPath}>
-                  Download MP3
-                </a>
-                <a
-                  className={styles.editMusicLink}
-                  href="https://bgmgen.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Edit Music with AI
-                </a>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-      </form>
-
-      {videoId ? (
-        <div className={styles.fallbackCard}>
-          <p className={styles.fallbackCardTitle}>Alternative download — MP3 &amp; MP4</p>
-          <div className={styles.fallbackIframeWrap}>
-            <iframe
-              src={`https://y2jar.cc/?id=${videoId}&appearance=dark`}
-              className={styles.fallbackIframe}
-              title="YouTube to MP3/MP4 Converter"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
-              loading="lazy"
+      <div className={styles.sideBySide}>
+        <div className={styles.formCol}>
+          <form id="converter-form" className={styles.form} onSubmit={handleSubmit}>
+            <label className={styles.label} htmlFor="youtube-url">
+              YouTube video URL
+            </label>
+            <input
+              id="youtube-url"
+              className={styles.input}
+              type="url"
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+              required
             />
+
+            <button className={styles.button} type="submit" disabled={isLoading}>
+              {isLoading ? "Converting..." : "Use YouTube to MP3 Converter"}
+            </button>
+            <a
+              className={styles.aiButton}
+              href="https://bgmgen.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Free AI Music Generator
+            </a>
+
+
+          </form>
+
+          <div className={styles.historySection} style={{ marginTop: "1rem" }}>
+            <div className={styles.historyHeader}>
+              <span>Recent</span>
+              {history.length > 0 && (
+                <button className={styles.historyClear} onClick={clearHistory}>
+                  Clear
+                </button>
+              )}
+            </div>
+            <ul className={styles.historyList}>
+              {history.length === 0 ? (
+                <li className={styles.historyEmpty}>No recent URLs</li>
+              ) : (
+                history.map((item, idx) => (
+                  <li key={idx}>
+                    <button
+                      className={styles.historyItem}
+                      onClick={() => {
+                        setUrl(item);
+                        const form = document.getElementById("converter-form") as HTMLFormElement | null;
+                        if (form) void form.requestSubmit();
+                      }}
+                    >
+                      {item}
+                    </button>
+                  </li>
+                ))
+              )}
+            </ul>
           </div>
         </div>
-      ) : null}
+
+        {videoId ? (
+          <div className={styles.iframeCol}>
+            <div className={styles.fallbackCard}>
+              <div className={styles.fallbackIframeWrap}>
+                <iframe
+                  src={`https://y2jar.cc/?id=${videoId}&appearance=dark`}
+                  className={styles.fallbackIframe}
+                  title="YouTube to MP3/MP4 Converter"
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </div>
 
       <div className={styles.bgmGenSection}>
         <p className={styles.bgmGenTitle}>Free AI Music Tools — Royalty-Free for Commercial Use</p>

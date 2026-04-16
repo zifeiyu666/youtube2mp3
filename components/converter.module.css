@@ -82,6 +82,28 @@
   box-shadow: 0 12px 24px rgba(143, 17, 17, 0.2);
 }
 
+.aiButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.85rem 1.3rem;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--brand-strong);
+  background: #fff;
+  border: 1px solid rgba(214, 40, 40, 0.2);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.aiButton:hover {
+  background: var(--brand-strong);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .button:disabled {
   cursor: wait;
   opacity: 0.8;
@@ -217,22 +239,112 @@
   box-shadow: 0 4px 12px rgba(143, 17, 17, 0.15);
 }
 
+.sideBySide {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.sideBySide:has(.iframeCol) {
+  grid-template-columns: 1fr 1fr;
+}
+
+.formCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.historySection {
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  overflow: hidden;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  max-width: 528px;
+}
+
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 1rem 1rem 0.75rem;
+  background: transparent;
+}
+
+.historyList {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.historyEmpty {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.historyClear {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--brand-strong);
+  cursor: pointer;
+  padding: 0;
+}
+
+.historyClear:hover {
+  text-decoration: underline;
+}
+
+.historyItem {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.historyItem:hover {
+  background: rgba(214, 40, 40, 0.08);
+  color: var(--brand-strong);
+}
+
+.iframeCol {
+  display: flex;
+  flex-direction: column;
+}
+
 .fallbackCard {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.fallbackCardTitle {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-
 .fallbackIframeWrap {
   border-radius: var(--radius-lg);
   overflow: hidden;
+  background: #000;
 }
 
 .fallbackIframe {
