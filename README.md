@@ -31,3 +31,20 @@ A small Next.js app for `youtube2mp3.io` that converts public YouTube videos to 
 - The AdSense blocks in [app/page.tsx](/Users/gymd/myProjects/youtube2mp3/app/page.tsx) now mirror the official `ins.adsbygoogle` plus `push({})` pattern for each slot.
 - Google Analytics is loaded in [app/layout.tsx](/Users/gymd/myProjects/youtube2mp3/app/layout.tsx) only when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is configured.
 - Legal pages are available at `/copyright`, `/privacy-policy`, and `/terms-of-service`.
+
+## Chrome Extension
+
+This repo now includes a loadable Chrome extension under [chrome-extension](/Users/gymd/myProjects/youtube2mp3/chrome-extension).
+
+### What it does
+
+- Injects a floating `youtube2mp3` panel on YouTube watch and shorts pages.
+- Lets the user click `Open Converter` and opens the same embedded converter iframe used on the site.
+- Avoids relying on the `/api/convert/*` proxy routes.
+
+### Load it in Chrome
+
+1. Open `chrome://extensions`.
+2. Enable `Developer mode`.
+3. Click `Load unpacked`.
+4. Select [chrome-extension](/Users/gymd/myProjects/youtube2mp3/chrome-extension).

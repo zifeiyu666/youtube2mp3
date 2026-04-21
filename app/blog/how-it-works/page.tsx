@@ -1,5 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BlogHeader } from "../BlogHeader";
+import cover from "../covers/ScreenShot_2026-04-21_165827_895.png";
 import styles from "../../legal.module.css";
 
 export const metadata: Metadata = {
@@ -11,6 +14,7 @@ export default function HowItWorksPage() {
   return (
     <main className={styles.page}>
       <div className={styles.shell}>
+        <BlogHeader />
         <Link className={styles.back} href="/blog">
           Back to Blog
         </Link>
@@ -18,6 +22,19 @@ export default function HowItWorksPage() {
         <p className={styles.lede}>
           A technical overview of how YouTube to MP3/MP4 conversion works using FFmpeg and yt-dlp.
         </p>
+
+        <Image
+          src={cover}
+          alt="Technical cover image showing FFmpeg and yt-dlp concepts behind YouTube to MP3 and MP4 conversion"
+          style={{
+            width: "100%",
+            height: "auto",
+            display: "block",
+            marginTop: "1.5rem",
+            borderRadius: "calc(var(--radius-lg) - 6px)",
+            border: "1px solid rgba(32,21,13,0.08)",
+          }}
+        />
 
         <section className={styles.section}>
           <h2>Overview</h2>
@@ -91,6 +108,26 @@ export default function HowItWorksPage() {
           <h2>Open Source Foundations</h2>
           <p>
             Both yt-dlp and FFmpeg are open-source projects with active communities. yt-dlp is hosted on GitHub and is released under the Unlicense (public domain). FFmpeg is released under LGPL/GPL depending on the components used. These tools power millions of conversions daily across the web and represent the state of the art in open multimedia processing.
+          </p>
+        </section>
+
+        <section className={styles.section}>
+          <h2>Useful Links</h2>
+          <p>
+            If you want to see this pipeline from the user side instead of the implementation side,
+            open{" "}
+            <a href="https://www.youtube2mp3.io/" target="_blank" rel="noopener noreferrer">
+              https://www.youtube2mp3.io/
+            </a>{" "}
+            and submit a public YouTube link.
+          </p>
+          <p style={{ marginTop: "1rem" }}>
+            For AI-generated background music workflows that can complement downloaded reference
+            material, visit{" "}
+            <a href="https://bgmgen.com" target="_blank" rel="noopener noreferrer">
+              https://bgmgen.com
+            </a>
+            .
           </p>
         </section>
       </div>

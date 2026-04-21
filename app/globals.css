@@ -3,6 +3,7 @@
   --bg: #fff9f0;
   --bg-accent: #ffd8a8;
   --panel: rgba(255, 255, 255, 0.82);
+  --panel-light: rgba(255, 255, 255, 0.5);
   --panel-border: rgba(46, 32, 19, 0.12);
   --text: #20150d;
   --muted: #6a5647;
@@ -11,8 +12,9 @@
   --brand-soft: #ffe6d5;
   --ok: #2e8b57;
   --shadow: 0 24px 60px rgba(79, 43, 21, 0.18);
-  --radius-xl: 28px;
-  --radius-lg: 20px;
+  --radius-xl: 8px;
+  --radius-lg: 8px;
+  --radius-sm: 8px;
 }
 
 * {

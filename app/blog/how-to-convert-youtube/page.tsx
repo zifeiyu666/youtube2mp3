@@ -1,5 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BlogHeader } from "../BlogHeader";
+import cover from "../covers/ScreenShot_2026-04-21_165919_370.png";
 import styles from "../../legal.module.css";
 
 export const metadata: Metadata = {
@@ -11,6 +14,7 @@ export default function HowToConvertPage() {
   return (
     <main className={styles.page}>
       <div className={styles.shell}>
+        <BlogHeader />
         <Link className={styles.back} href="/blog">
           Back to Blog
         </Link>
@@ -18,6 +22,19 @@ export default function HowToConvertPage() {
         <p className={styles.lede}>
           A complete guide to converting YouTube videos into MP3 audio or MP4 video files using youtube2mp3.io.
         </p>
+
+        <Image
+          src={cover}
+          alt="Step by step YouTube to MP3 and MP4 conversion guide cover with download workflow illustration"
+          style={{
+            width: "100%",
+            height: "auto",
+            display: "block",
+            marginTop: "1.5rem",
+            borderRadius: "calc(var(--radius-lg) - 6px)",
+            border: "1px solid rgba(32,21,13,0.08)",
+          }}
+        />
 
         <section className={styles.section}>
           <h2>What You Need</h2>
@@ -91,6 +108,24 @@ export default function HowToConvertPage() {
           <p style={{ marginTop: "1rem" }}>
             <strong>Can I use this on my phone?</strong><br />
             Yes, the converter works on mobile browsers including iPhone Safari and Android Chrome.
+          </p>
+        </section>
+
+        <section className={styles.section}>
+          <h2>Useful Links</h2>
+          <p>
+            To try the workflow described in this guide, visit{" "}
+            <a href="https://www.youtube2mp3.io/" target="_blank" rel="noopener noreferrer">
+              https://www.youtube2mp3.io/
+            </a>{" "}
+            and paste a public YouTube URL into the converter.
+          </p>
+          <p style={{ marginTop: "1rem" }}>
+            If you also want to generate original music after collecting reference tracks, try{" "}
+            <a href="https://bgmgen.com" target="_blank" rel="noopener noreferrer">
+              https://bgmgen.com
+            </a>
+            .
           </p>
         </section>
       </div>

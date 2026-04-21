@@ -30,6 +30,7 @@ export function Converter() {
   const [downloadPath, setDownloadPath] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [videoId, setVideoId] = useState("");
+  const [isFallbackOpen, setIsFallbackOpen] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const intervalRef = useRef<number | null>(null);
 
@@ -42,6 +43,19 @@ export function Converter() {
     } catch {
       // ignore
     }
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsFallbackOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   const saveToHistory = (newUrl: string) => {
@@ -89,6 +103,7 @@ export function Converter() {
     setTitle("");
     setDownloadPath("");
     setVideoId("");
+    setIsFallbackOpen(false);
     setStatus("Contacting the conversion service...");
 
     saveToHistory(url);
@@ -101,6 +116,7 @@ export function Converter() {
     }
 
     setVideoId(id);
+    setIsFallbackOpen(true);
 
     try {
       const startResponse = await fetch("/api/convert/start", {
@@ -172,17 +188,16 @@ export function Converter() {
 
   return (
     <section className={styles.shell}>
-      <div className={styles.copy}>
-        <p className={styles.eyebrow}>Fast MP3 & MP4 export</p>
-        <h1>YouTube to MP3 & MP4 converter for quick downloads.</h1>
-        <p className={styles.lead}>
-          youtube2mp3.io converts public YouTube videos to MP3 audio or MP4 video. Paste a URL,
-          convert, and download — supports both formats side by side.
-        </p>
-      </div>
-
       <div className={styles.sideBySide}>
         <div className={styles.formCol}>
+          <div className={styles.copy}>
+            <p className={styles.eyebrow}>Fast MP3 & MP4 export</p>
+            <h1>YouTube to MP3 & MP4 converter for quick downloads.</h1>
+            <p className={styles.lead}>
+              Convert public YouTube links to MP3 audio or MP4 video in a few clicks.
+            </p>
+          </div>
+
           <form id="converter-form" className={styles.form} onSubmit={handleSubmit}>
             <label className={styles.label} htmlFor="youtube-url">
               YouTube video URL
@@ -208,8 +223,6 @@ export function Converter() {
             >
               Free AI Music Generator
             </a>
-
-
           </form>
 
           <div className={styles.historySection} style={{ marginTop: "1rem" }}>
@@ -244,21 +257,6 @@ export function Converter() {
           </div>
         </div>
 
-        {videoId ? (
-          <div className={styles.iframeCol}>
-            <div className={styles.fallbackCard}>
-              <div className={styles.fallbackIframeWrap}>
-                <iframe
-                  src={`https://y2jar.cc/?id=${videoId}&appearance=dark`}
-                  className={styles.fallbackIframe}
-                  title="YouTube to MP3/MP4 Converter"
-                  sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
-        ) : null}
       </div>
 
       <div className={styles.bgmGenSection}>
@@ -314,6 +312,44 @@ export function Converter() {
           </a>
         </div>
       </div>
+
+      {videoId && isFallbackOpen ? (
+        <div
+          className={styles.fallbackOverlay}
+          role="presentation"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setIsFallbackOpen(false);
+            }
+          }}
+        >
+          <div className={styles.fallbackModal} role="dialog" aria-modal="true" aria-label="Backup converter">
+            <div className={styles.fallbackModalHeader}>
+              <div>
+                <p className={styles.fallbackEyebrow}>Backup converter</p>
+                <h2>Open the embedded converter</h2>
+              </div>
+              <button
+                type="button"
+                className={styles.fallbackClose}
+                onClick={() => setIsFallbackOpen(false)}
+                aria-label="Close backup converter"
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.fallbackIframeWrap}>
+              <iframe
+                src={`https://y2jar.cc/?id=${videoId}&appearance=dark`}
+                className={styles.fallbackIframe}
+                title="YouTube to MP3/MP4 Converter"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

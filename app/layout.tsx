@@ -1,5 +1,6 @@
 import Script from "next/script";
 import type { Metadata } from "next";
+import { ShareSidebar } from "@/components/ShareSidebar";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://youtube2mp3.io";
@@ -57,6 +58,7 @@ export default function RootLayout({
             </Script>
           </>
         ) : null}
+        <ShareSidebar />
         {children}
       </body>
     </html>
