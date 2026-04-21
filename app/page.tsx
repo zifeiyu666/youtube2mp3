@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
+import { BookmarkUsButton } from "@/components/BookmarkUsButton";
 import { Converter } from "@/components/Converter";
 import styles from "./page.module.css";
 
@@ -105,11 +106,14 @@ export default function Home() {
       <div className={styles.frame}>
         <header className={styles.topBar}>
           <p className={styles.brand}>youtube2mp3.io</p>
-          <nav className={styles.nav}>
-            <Link href="/" className={styles.navLink}>Home</Link>
-            <a href="https://bgmgen.com" target="_blank" rel="noopener noreferrer" className={`${styles.navLink} ${styles.navLinkPrimary}`}>AI Music Generator</a>
-            <Link href="/blog" className={styles.navLink}>Blog</Link>
-          </nav>
+          <div className={styles.topBarActions}>
+            <BookmarkUsButton />
+            <nav className={styles.nav}>
+              <Link href="/" className={styles.navLink}>Home</Link>
+              <a href="https://bgmgen.com" target="_blank" rel="noopener noreferrer" className={`${styles.navLink} ${styles.navLinkPrimary}`}>AI Music Generator</a>
+              <Link href="/blog" className={styles.navLink}>Blog</Link>
+            </nav>
+          </div>
         </header>
 
         <Script

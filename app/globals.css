@@ -31,9 +31,9 @@ body {
   color: var(--text);
   font-family: Georgia, "Times New Roman", serif;
   background:
-    radial-gradient(circle at top left, rgba(255, 216, 168, 0.85), transparent 32%),
-    radial-gradient(circle at bottom right, rgba(214, 40, 40, 0.18), transparent 28%),
-    linear-gradient(135deg, #fff8ec 0%, #fff0dd 48%, #ffe7d6 100%);
+    radial-gradient(circle at top left, rgba(255, 216, 168, 0.46), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(214, 40, 40, 0.08), transparent 24%),
+    linear-gradient(135deg, #fffbf5 0%, #fff6eb 48%, #fff1e6 100%);
 }
 
 a {
