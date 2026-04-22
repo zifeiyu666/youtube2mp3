@@ -17,6 +17,9 @@ export function BlogHeader() {
           <Link className={styles.headerLink} href="/blog">
             Blog
           </Link>
+          <Link className={styles.headerLink} href="/popular-downloads">
+            Popular Downloads
+          </Link>
         </nav>
       </div>
     </header>

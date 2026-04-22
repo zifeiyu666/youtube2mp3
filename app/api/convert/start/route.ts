@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-
-const REMOTE_BASE_URL = "https://yt2mp3-magic.onrender.com";
-
-type RemoteStartResponse = {
-  success?: boolean;
-  pid?: string;
-  title?: string;
-  error?: string;
-};
+import { ensureSeoVideoRecord } from "@/lib/seo-videos";
+import { extractYouTubeVideoId } from "@/lib/youtube";
 
 export async function POST(request: Request) {
   try {
@@ -20,29 +13,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const remoteResponse = await fetch(`${REMOTE_BASE_URL}/api/start`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ url: body.url }),
-      cache: "no-store",
-    });
-
-    const data = (await remoteResponse.json()) as RemoteStartResponse;
+    const videoId = extractYouTubeVideoId(body.url);
+    if (videoId) {
+      void ensureSeoVideoRecord(videoId).catch(() => {});
+    }
 
     return NextResponse.json(
       {
-        success: Boolean(data.success),
-        pid: data.pid,
-        title: data.title,
-        error: data.error,
+        success: false,
+        error:
+          "Direct server-side conversion has been removed. Use the embedded converter flow in the UI instead.",
       },
-      { status: remoteResponse.status },
+      { status: 410 },
     );
   } catch {
     return NextResponse.json(
-      { success: false, error: "The conversion service is temporarily unavailable." },
+      { success: false, error: "Unable to prepare the embedded converter flow." },
       { status: 502 },
     );
   }

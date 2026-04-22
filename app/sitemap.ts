@@ -1,52 +1,76 @@
 import type { MetadataRoute } from "next";
+import { ensureSeedVideoRecords, getSeoVideoSitemapEntries } from "@/lib/seo-videos";
+import { blogPosts } from "./blog/posts";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://youtube2mp3.io";
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://youtube2mp3.io").replace(/\/$/, "");
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const staticRoutes = [
+  {
+    path: "",
+    changeFrequency: "daily" as const,
+    priority: 1,
+  },
+  {
+    path: "/blog",
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  },
+  {
+    path: "/popular-downloads",
+    changeFrequency: "daily" as const,
+    priority: 0.85,
+  },
+  {
+    path: "/blog/how-to-convert-youtube",
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  },
+  {
+    path: "/blog/how-it-works",
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  },
+  {
+    path: "/copyright",
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  },
+  {
+    path: "/privacy-policy",
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  },
+  {
+    path: "/terms-of-service",
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  },
+];
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  await ensureSeedVideoRecords();
+
   const now = new Date();
+  const blogRoutes = blogPosts.map((post) => {
+    const parsedDate = new Date(post.createdAt);
+
+    return {
+      url: `${siteUrl}/blog/${post.slug}`,
+      lastModified: Number.isNaN(parsedDate.getTime()) ? now : parsedDate,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    };
+  });
+  const seoVideoRoutes = await getSeoVideoSitemapEntries();
 
   return [
-    {
-      url: siteUrl,
+    ...staticRoutes.map((route) => ({
+      url: `${siteUrl}${route.path}`,
       lastModified: now,
-      changeFrequency: "daily",
-      priority: 1,
-    },
-    {
-      url: `${siteUrl}/blog`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/blog/how-to-convert-youtube`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/blog/how-it-works`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/copyright`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${siteUrl}/privacy-policy`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${siteUrl}/terms-of-service`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
+      changeFrequency: route.changeFrequency,
+      priority: route.priority,
+    })),
+    ...blogRoutes,
+    ...seoVideoRoutes,
   ];
 }

@@ -17,6 +17,7 @@ A small Next.js app for `youtube2mp3.io` that converts public YouTube videos to 
    ```
 
 3. Update `NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT` with your AdSense publisher ID and set your ad slot IDs. If you want Google Analytics, set `NEXT_PUBLIC_GA_MEASUREMENT_ID` (for example, `G-XXXXXXXXXX`).
+   For programmatic video SEO pages, `SEO_VIDEO_CACHE_TTL_HOURS` controls metadata refresh time and `SEO_VIDEO_SEED_IDS` accepts a comma-separated list of YouTube video IDs to preseed into the sitemap.
 
 4. Start the app:
 
@@ -26,11 +27,13 @@ A small Next.js app for `youtube2mp3.io` that converts public YouTube videos to 
 
 ## Notes
 
-- The frontend calls local route handlers under `/api/convert/*`.
-- The local route handlers proxy requests to the upstream conversion service to avoid browser-side CORS issues.
+- Programmatic video SEO pages use YouTube's public oEmbed endpoint to fetch title, channel name, and thumbnails without a server-side API key.
+- The site no longer proxies downloads through the suspended `yt2mp3-magic.onrender.com` service. Conversion is handled through the embedded provider shown in the UI.
 - The AdSense blocks in [app/page.tsx](/Users/gymd/myProjects/youtube2mp3/app/page.tsx) now mirror the official `ins.adsbygoogle` plus `push({})` pattern for each slot.
 - Google Analytics is loaded in [app/layout.tsx](/Users/gymd/myProjects/youtube2mp3/app/layout.tsx) only when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is configured.
 - Legal pages are available at `/copyright`, `/privacy-policy`, and `/terms-of-service`.
+- Programmatic SEO video pages live at `/mp3/[slug]-[videoId]` and are cached under [data/seo-videos](/Users/gymd/myProjects/youtube2mp3/data/seo-videos).
+- You can warm a page manually by opening `/api/seo/video/<videoId>` in the running app, or by submitting the video through the homepage converter.
 
 ## Chrome Extension
 

@@ -1,38 +1,37 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
+import { extractYouTubeVideoId } from "@/lib/youtube";
 import styles from "./converter.module.css";
 
-type StartResponse = {
-  success: boolean;
-  pid?: string;
+const HISTORY_KEY = "yt2mp3_history";
+const MAX_HISTORY = 20;
+
+type SeoResponse = {
+  canonicalPath?: string;
   title?: string;
   error?: string;
 };
 
-type StatusResponse = {
-  finished?: boolean;
-  downloadUrl?: string;
-  status?: string;
-  progress?: number;
-  error?: string;
+type ConverterProps = {
+  initialUrl?: string;
+  headingLevel?: "h1" | "h2";
+  showMusicTools?: boolean;
 };
 
-const POLL_MS = 6000;
-const HISTORY_KEY = "yt2mp3_history";
-const MAX_HISTORY = 20;
-
-export function Converter() {
-  const [url, setUrl] = useState("");
-  const [title, setTitle] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [status, setStatus] = useState("Paste a YouTube link to begin.");
-  const [downloadPath, setDownloadPath] = useState("");
+export function Converter({
+  initialUrl = "",
+  headingLevel = "h1",
+  showMusicTools = true,
+}: ConverterProps) {
+  const [url, setUrl] = useState(initialUrl);
   const [isLoading, setIsLoading] = useState(false);
   const [videoId, setVideoId] = useState("");
   const [isFallbackOpen, setIsFallbackOpen] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
-  const intervalRef = useRef<number | null>(null);
+  const [seoPagePath, setSeoPagePath] = useState("");
+  const HeadingTag = headingLevel;
 
   useEffect(() => {
     try {
@@ -44,6 +43,10 @@ export function Converter() {
       // ignore
     }
   }, []);
+
+  useEffect(() => {
+    setUrl(initialUrl);
+  }, [initialUrl]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -73,117 +76,42 @@ export function Converter() {
     localStorage.removeItem(HISTORY_KEY);
   };
 
-  const clearPolling = () => {
-    if (intervalRef.current) {
-      window.clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
+  const ensureSeoPage = async (id: string) => {
+    try {
+      const response = await fetch(`/api/seo/video/${encodeURIComponent(id)}`, {
+        cache: "no-store",
+      });
 
-  const extractVideoId = (input: string): string | null => {
-    if (input.includes("youtube.com/")) {
-      const match = /v=([a-zA-Z0-9\-_]{11})/.exec(input);
-      if (match) return match[1];
-      const shortMatch = /youtube\.com\/shorts\/([a-zA-Z0-9\-_]{11})/.exec(input);
-      if (shortMatch) return shortMatch[1];
+      const data = (await response.json()) as SeoResponse;
+
+      if (response.ok && data.canonicalPath) {
+        setSeoPagePath(data.canonicalPath);
+      }
+    } catch {
+      // ignore SEO cache warm failures on the client
     }
-    if (input.includes("youtu.be/")) {
-      const match = /youtu\.be\/([a-zA-Z0-9\-_]{11})/.exec(input);
-      if (match) return match[1];
-    }
-    return null;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    clearPolling();
     setIsLoading(true);
-    setProgress(0);
-    setTitle("");
-    setDownloadPath("");
     setVideoId("");
     setIsFallbackOpen(false);
-    setStatus("Contacting the conversion service...");
+    setSeoPagePath("");
 
     saveToHistory(url);
 
-    const id = extractVideoId(url);
+    const id = extractYouTubeVideoId(url);
     if (!id) {
       setIsLoading(false);
-      setStatus("Invalid YouTube URL. Please check and try again.");
       return;
     }
 
     setVideoId(id);
     setIsFallbackOpen(true);
-
-    try {
-      const startResponse = await fetch("/api/convert/start", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url }),
-      });
-
-      const startData = (await startResponse.json()) as StartResponse;
-
-      if (!startResponse.ok || !startData.success || !startData.pid || !startData.title) {
-        setIsLoading(false);
-        setStatus("Conversion service unavailable. Use the alternative below.");
-        return;
-      }
-
-      setTitle(startData.title);
-      setStatus("Conversion started. Checking progress...");
-
-      const runStatusCheck = async () => {
-        const response = await fetch(
-          `/api/convert/status?id=${encodeURIComponent(startData.pid as string)}`,
-        );
-
-        const statusData = (await response.json()) as StatusResponse;
-
-        if (!response.ok) {
-          clearPolling();
-          setIsLoading(false);
-          setStatus("Conversion service unavailable. Use the alternative below.");
-          return;
-        }
-
-        const safeProgress = Math.min(Math.max(statusData.progress ?? 0, 0), 1000);
-        setProgress(Math.floor(safeProgress / 10));
-        setStatus(statusData.status || "Converting...");
-
-        if (statusData.downloadUrl) {
-          clearPolling();
-          setProgress(100);
-          setStatus("Ready. Your MP3 is available.");
-          setDownloadPath(
-            `/api/convert/download?downloadUrl=${encodeURIComponent(
-              statusData.downloadUrl,
-            )}&title=${encodeURIComponent(startData.title as string)}`,
-          );
-          setIsLoading(false);
-          return;
-        }
-      };
-
-      await runStatusCheck();
-
-      intervalRef.current = window.setInterval(() => {
-        void runStatusCheck().catch(() => {
-          clearPolling();
-          setIsLoading(false);
-          setStatus("Conversion service unavailable. Use the alternative below.");
-        });
-      }, POLL_MS);
-    } catch {
-      clearPolling();
-      setIsLoading(false);
-      setStatus("Conversion service unavailable. Use the alternative below.");
-    }
+    await ensureSeoPage(id);
+    setIsLoading(false);
   };
 
   return (
@@ -192,7 +120,7 @@ export function Converter() {
         <div className={styles.formCol}>
           <div className={styles.copy}>
             <p className={styles.eyebrow}>Fast MP3 & MP4 export</p>
-            <h1>YouTube to MP3 & MP4 converter for quick downloads.</h1>
+            <HeadingTag>YouTube to MP3 & MP4 converter for quick downloads.</HeadingTag>
             <p className={styles.lead}>
               Convert public YouTube links to MP3 audio or MP4 video in a few clicks.
             </p>
@@ -213,8 +141,13 @@ export function Converter() {
             />
 
             <button className={styles.button} type="submit" disabled={isLoading}>
-              {isLoading ? "Converting..." : "Use YouTube to MP3 Converter"}
+              {isLoading ? "Opening..." : "Open YouTube to MP3 Converter"}
             </button>
+            {seoPagePath ? (
+              <Link className={styles.seoPageLink} href={seoPagePath}>
+                Open the indexed video landing page
+              </Link>
+            ) : null}
             <a
               className={styles.aiButton}
               href="https://bgmgen.com"
@@ -259,59 +192,61 @@ export function Converter() {
 
       </div>
 
-      <div className={styles.bgmGenSection}>
-        <p className={styles.bgmGenTitle}>Free AI Music Tools — Royalty-Free for Commercial Use</p>
-        <div className={styles.bgmGenButtons}>
-          <a
-            href="https://bgmgen.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.bgmGenButton}
-          >
-            AI BgmGen
-          </a>
-          <a
-            href="https://bgmgen.com/workspace/create"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.bgmGenButton}
-          >
-            AI Music Generator
-          </a>
-          <a
-            href="https://bgmgen.com/workspace/create-bgm"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.bgmGenButton}
-          >
-            Royalty-Free Background Music
-          </a>
-          <a
-            href="https://bgmgen.com/workspace/create-bgm"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.bgmGenButton}
-          >
-            Add Commercial-Use Audio
-          </a>
-          <a
-            href="https://bgmgen.com/workspace/vocal-remover"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.bgmGenButton}
-          >
-            Free Vocal Remover
-          </a>
-          <a
-            href="https://bgmgen.com/workspace/create-mix"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.bgmGenButton}
-          >
-            Mix Music for Commercial Projects
-          </a>
+      {showMusicTools ? (
+        <div className={styles.bgmGenSection}>
+          <p className={styles.bgmGenTitle}>Free AI Music Tools — Royalty-Free for Commercial Use</p>
+          <div className={styles.bgmGenButtons}>
+            <a
+              href="https://bgmgen.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bgmGenButton}
+            >
+              AI BgmGen
+            </a>
+            <a
+              href="https://bgmgen.com/workspace/create"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bgmGenButton}
+            >
+              AI Music Generator
+            </a>
+            <a
+              href="https://bgmgen.com/workspace/create-bgm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bgmGenButton}
+            >
+              Royalty-Free Background Music
+            </a>
+            <a
+              href="https://bgmgen.com/workspace/create-bgm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bgmGenButton}
+            >
+              Add Commercial-Use Audio
+            </a>
+            <a
+              href="https://bgmgen.com/workspace/vocal-remover"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bgmGenButton}
+            >
+              Free Vocal Remover
+            </a>
+            <a
+              href="https://bgmgen.com/workspace/create-mix"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.bgmGenButton}
+            >
+              Mix Music for Commercial Projects
+            </a>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {videoId && isFallbackOpen ? (
         <div
