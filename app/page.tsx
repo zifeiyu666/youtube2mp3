@@ -218,6 +218,7 @@ export default function Home() {
           </nav>
           <nav className={styles.footerNav} aria-label="Friendly Links">
             <a href="https://bgmgen.com" target="_blank" rel="noopener noreferrer">BgmGen</a>
+            <a href="https://customsong.top/" target="_blank" rel="noopener noreferrer">CustomSong</a>
           </nav>
         </footer>
       </div>
